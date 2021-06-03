@@ -4,7 +4,8 @@
   "description": "This is whatsapp backend // do not touch it",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/rookasrudzianskas/Whatsapp-MERN-Backend/issues"
   },
-  "homepage": "https://github.com/rookasrudzianskas/Whatsapp-MERN-Backend#readme"
+  "homepage": "https://github.com/rookasrudzianskas/Whatsapp-MERN-Backend#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.12.12"
+  }
 }
