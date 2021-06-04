@@ -3,6 +3,8 @@ import express from "express";
 import mongoose from "mongoose";
 import Messages from "./dbMessages.js";
 import Pusher from "pusher";
+import cors from "cors";
+
 //app config
 // creating the application 👇
 const app = express();
@@ -22,12 +24,14 @@ const pusher = new Pusher({
 // middleware
 // this is total shit
 app.use(express.json());
+// this should set some rules
+app.use(cors());
 // Do not do in production, because it is open for anyone in any case
-app.use((req, res, next) => {
-   res.setHeader('Access-Control-Allow-Origin', '*');
-   res.setHeader('Access-Control-Allow-Headers', '*');
-   next();
-});
+// app.use((req, res, next) => {
+//    res.setHeader('Access-Control-Allow-Origin', '*');
+//    res.setHeader('Access-Control-Allow-Headers', '*');
+//    next();
+// });
 
 // DB config
 // This is the thing, how we connect to the database
@@ -65,6 +69,8 @@ db.once('open', () => {
             pusher.trigger('messages', 'inserted', {
                 name: messageDetails.name,
                 message: messageDetails.message,
+                timestamp: messageDetails.timestamp,
+                received: messageDetails.received,
             });
         } else {
             console.log("Error triggering the Pusher");
