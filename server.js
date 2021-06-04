@@ -10,6 +10,7 @@ const app = express();
 // port where our api is going to run 👇
 const port = process.env.PORT || 9000;
 
+// pusher login details
 const pusher = new Pusher({
     appId: "1214358",
     key: "be01aa18ea94a4ff1264",
@@ -47,7 +48,23 @@ db.once('open', () => {
 
     changeStream.on('change', (change) => {
         console.log('A change occurred', change);
+
+        // then the change occurs, we save the change into the varible if the type of change is insert, then
+        // there is a full document field, which we save into variable, and then it is the time then we trigger the pusher, to
+        //we are going to rerender everything now, with pusher
+        // the change is made in here
+        if(change.operationType === 'insert') {
+            const messageDetails = change.fullDocument;
+            // pusher trigerred with some shit in this side
+            pusher.trigger('messages', 'inserted', {
+                name: messageDetails.user,
+                message: messageDetails.message,
+            });
+        } else {
+            console.log("Error triggering the Pusher");
+        }
     });
+    //==========================================================
 });
 
 
