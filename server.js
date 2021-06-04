@@ -6,8 +6,19 @@ import Messages from "./dbMessages.js";
 //app config
 // creating the application 👇
 const app = express();
+const Pusher = require("pusher");
+
 // port where our api is going to run 👇
 const port = process.env.PORT || 9000;
+
+const pusher = new Pusher({
+    appId: "1214358",
+    key: "be01aa18ea94a4ff1264",
+    secret: "bbcfaf0ac0fd3a0f17d9",
+    cluster: "eu",
+    useTLS: true
+});
+
 // middleware
 // this is total shit
 app.use(express.json());
