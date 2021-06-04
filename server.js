@@ -22,6 +22,12 @@ const pusher = new Pusher({
 // middleware
 // this is total shit
 app.use(express.json());
+// Do not do in production, because it is open for anyone in any case
+app.use((req, res, next) => {
+   res.setHeader('Access-Control-Allow-Origin', '*');
+   res.setHeader('Access-Control-Allow-Headers', '*');
+   next();
+});
 
 // DB config
 // This is the thing, how we connect to the database
@@ -57,7 +63,7 @@ db.once('open', () => {
             const messageDetails = change.fullDocument;
             // pusher trigerred with some shit in this side
             pusher.trigger('messages', 'inserted', {
-                name: messageDetails.user,
+                name: messageDetails.name,
                 message: messageDetails.message,
             });
         } else {
