@@ -2,11 +2,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import Messages from "./dbMessages.js";
-
+import Pusher from "pusher";
 //app config
 // creating the application 👇
 const app = express();
-const Pusher = require("pusher");
 
 // port where our api is going to run 👇
 const port = process.env.PORT || 9000;
@@ -33,7 +32,23 @@ mongoose.connect(connection_url, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
-})
+});
+
+const db = mongoose.connection;
+// onece the connection is open
+db.once('open', () => {
+    console.log("DB is connected");
+
+    // creates a collection in mongo db
+    const msgCollection = db.collection('messagecontents');
+    // watches for the something
+    // console.log(msgCollection);
+    const changeStream = msgCollection.watch();
+
+    changeStream.on('change', (change) => {
+        console.log('A change occurred', change);
+    });
+});
 
 
 
@@ -47,9 +62,9 @@ app.get('/messages/sync', (req, res) => {
     // this gets all the data from the server
     Messages.find((err, data) => {
         if(err) {
-            res.status(500).send(err)
+            res.status(500).send(err);
         } else {
-            res.status(200).send(data)
+            res.status(200).send(data);
         }
     })
 })
@@ -61,7 +76,7 @@ app.post('/messages/new', (req, res) => {
             res.status(500).send(err);
             console.log("ERROR", err);
         } else {
-            res.status(201).send(`new message created \n ${data}`)
+            res.status(201).send(`new message created \n ${data}`);
         }
     })
 })
